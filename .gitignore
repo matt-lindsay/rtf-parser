@@ -61,4 +61,5 @@ typings/
 .next
 
 # custom
-.rtfTest.rtf
+rtfTest.rtf
+processedRtf.csv
