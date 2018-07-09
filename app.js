@@ -1,7 +1,7 @@
 const fs = require('fs');
 const parsertf = require('rtf-parser');
 
-let filename = './Summons MattTest.rtf';
+let filename = './Rem1 MattTest.rtf';
 
 // New instance of rtf-parser module.
 parsertf.stream(fs.createReadStream(filename), (err, doc) => {
@@ -34,30 +34,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     } else if (filename.match((/Rem2/) || filename.match(/Summons/))) {
       rtfline.splice(0,1);
     }
-    
-    
-    //for(let i = 0; i < rtfline.length; i++) {
-    //  let chkOne = '';
-    //  let chkTwo  = '';
-    //  
-    //  if (i === 0) {
-    //    // On first line, set chkOne value.
-    //    chkOne = rtfline[i];
-    //  } else {
-    //    // On subsequent lines, set chkTwo to current value.
-    //    // Use chkOne to compare chkTwo against.
-    //    chkTwo = rtfline[i];
-    //    
-    //    if (!chkTwo === 'R1X' || chkTwo === 'REM2' || chkTwo === 'XXFLAT') {
-    //      newArray.push(chkOne);
-    //    }
-    //    
-    //    // Set chkOne to current value, ready for next iteration.
-    //    chkOne = rtfline[i];
-    //  }
-    //}
-    
-    
+
     //console.log('>>> Number of lines in the RTF file: ' + rtfline.length); // DEBUG
     //console.log(rtfline); // DEBUG
     
@@ -76,24 +53,46 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
       }
     });
     
-    // Remove preceeding newline characters.
-    let firstLine = outputfile.slice(0, 1).toString();
+    // Remove unnecessary preceeding newline characters.
+    let firstLine = outputfile.slice(0, 1).toString(); // Extract the first line of the data array.
     let processedFirstLine = '';
-    let subst = '';
+    let substitute = '';
     
+    // Match te record type and remove the comma and newline characters.
     if (firstLine.match(/R1X/)) {
-      processedFirstLine = firstLine.replace(/^\s*\n/g, subst);
+      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
     } else if (firstLine.match(/REM2/)) {
-       processedFirstLine = firstLine.replace(/^\s*\n/g, subst);
-    } else if (firstLine.match(/Council Logo and Information/)) {
-      let pattern = /Council Logo and Information\,\n/gm;
-      processedFirstLine = firstLine.replace(pattern, subst); // REMOVE FIRST LINE OF SUMMONS. https://regex101.com/ Council Logo and Information[,]\n
+      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
+    } else if (firstLine.match(/XXFLAT/)) {
+      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute); // REMOVE FIRST LINE OF SUMMONS. https://regex101.com/
     }
-    console.log(processedFirstLine);
+    console.log(processedFirstLine); // DEBUG
+    // Insert newly processed first line record back into the data array.
     outputfile.splice(0, 1, processedFirstLine);
     
+    // Equalising record lengths: ensure that each record is 21 fields long.
+    // If field 11 is blank, remove it.
+    let normalisedOutputFile = [];
+    let i = 0;
+    outputfile.forEach(item => {
+      if (item.match(/R1X/)) {
+        i = 0;
+        normalisedOutputFile.push(item);
+      } else {
+        if (i === 11) {
+          if (!item.match(/^\s*\n/g)) {
+            // Ignore it.
+          } else {
+            normalisedOutputFile.push(item);
+          }
+        }
+        normalisedOutputFile.push(item);
+        i++;
+      }
+    });
+
     // Write the compiled CSV data in outputfile to a file.
-    fs.writeFile('./processedRtf.csv', outputfile, 'utf8', (err) => {
+    fs.writeFile('./processedRtf.csv', normalisedOutputFile, 'utf8', (err) => {
       if (err) {
         throw err;
       } else {
