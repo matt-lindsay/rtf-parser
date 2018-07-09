@@ -61,5 +61,7 @@ typings/
 .next
 
 # custom
-rtfTest.rtf
+Rem1 MattTest.rtf
+Rem2 MattTest.rtf
+Summons MattTest.rtf
 processedRtf.csv
