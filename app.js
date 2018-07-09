@@ -76,7 +76,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let i = 0;
     outputfile.forEach(item => {
       if (item.match(/R1X/)) {
-        i = 0;
+        i = 1;
         normalisedOutputFile.push(item);
       } else {
         if (i === 11) {
