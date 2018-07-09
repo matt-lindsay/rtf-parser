@@ -66,7 +66,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     } else if (firstLine.match(/XXFLAT/)) {
       processedFirstLine = firstLine.replace(/^\s*\n/g, substitute); // REMOVE FIRST LINE OF SUMMONS. https://regex101.com/
     }
-    console.log(processedFirstLine); // DEBUG
+    //console.log(processedFirstLine); // DEBUG
     // Insert newly processed first line record back into the data array.
     outputfile.splice(0, 1, processedFirstLine);
     
@@ -76,14 +76,16 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let i = 0;
     outputfile.forEach(item => {
       if (item.match(/R1X/)) {
-        i = 1;
+        i = 0;
         normalisedOutputFile.push(item);
       } else {
-        if (i === 11) {
+        if (i === 10) {
           if (!item.match(/^\s*\n/g)) {
             // Ignore it.
+            console.log('>>> IGNORED ' + item);
           } else {
             normalisedOutputFile.push(item);
+            console.log(item);
           }
         }
         normalisedOutputFile.push(item);
