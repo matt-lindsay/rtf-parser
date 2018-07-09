@@ -77,10 +77,11 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     outputfile.forEach(item => {
       if (item.match(/R1X/)) {
         i = 0;
+        console.log('>>> Counter reset.');
         normalisedOutputFile.push(item);
       } else {
         if (i === 10) {
-          if (!item.match(/^\s*\n/g)) {
+          if (item.match(/^\,\n/g)) {
             // Ignore it.
             console.log('>>> IGNORED ' + item);
           } else {
