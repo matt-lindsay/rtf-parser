@@ -90,8 +90,8 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
           }
         }
         normalisedOutputFile.push(item);
-        i++;
       }
+      i++;
     });
 
     // Write the compiled CSV data in outputfile to a file.
