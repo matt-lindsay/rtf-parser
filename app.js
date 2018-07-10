@@ -29,11 +29,11 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     //let newArray = [];
     
     // Clear blank first lines.
-    if (filename.match(/Rem1/)) {
-      rtfline.splice(0, 2);
-    } else if (filename.match((/Rem2/) || filename.match(/Summons/))) {
-      rtfline.splice(0,1);
-    }
+    //if (filename.match(/Rem1/)) {
+    //  rtfline.splice(0, 2);
+    //} else if (filename.match((/Rem2/) || filename.match(/Summons/))) {
+    //  rtfline.splice(0,1);
+    //}
 
     //console.log('>>> Number of lines in the RTF file: ' + rtfline.length); // DEBUG
     //console.log(rtfline); // DEBUG
@@ -46,7 +46,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
       if (item === 'R1X' || item === 'REM2' || item === 'XXFLAT') {
         // ...add a newline prior to the start of a new record. The first record will require its
         // preceeding newline character to be removed.
-        outputfile.push('\n' + item);
+        outputfile.push(item); // '\n' +
       } else {
         // ...add each subsequent item to the CSV.
         outputfile.push(item);
@@ -54,42 +54,49 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     });
     
     // Remove unnecessary preceeding newline characters.
-    let firstLine = outputfile.slice(0, 1).toString(); // Extract the first line of the data array.
-    let processedFirstLine = '';
-    let substitute = '';
+    //let firstLine = outputfile.slice(0, 1).toString(); // Extract the first line of the data array.
+    //let processedFirstLine = '';
+    //let substitute = '';
     
     // Match te record type and remove the comma and newline characters.
-    if (firstLine.match(/R1X/)) {
-      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
-    } else if (firstLine.match(/REM2/)) {
-      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
-    } else if (firstLine.match(/XXFLAT/)) {
-      processedFirstLine = firstLine.replace(/^\s*\n/g, substitute); // REMOVE FIRST LINE OF SUMMONS. https://regex101.com/
-    }
-    //console.log(processedFirstLine); // DEBUG
-    // Insert newly processed first line record back into the data array.
-    outputfile.splice(0, 1, processedFirstLine);
+    //if (firstLine.match(/R1X/)) {
+    //  //processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
+    //} else if (firstLine.match(/REM2/)) {
+    //  processedFirstLine = firstLine.replace(/^\s*\n/g, substitute);
+    //} else if (firstLine.match(/XXFLAT/)) {
+    //  processedFirstLine = firstLine.replace(/^\s*\n/g, substitute); // REMOVE FIRST LINE OF SUMMONS. https://regex101.com/
+    //}
+    ////console.log(processedFirstLine); // DEBUG
+    //// Insert newly processed first line record back into the data array.
+    //outputfile.splice(0, 1, processedFirstLine);
     
     // Equalising record lengths: ensure that each record is 21 fields long.
     // If field 11 is blank, remove it.
     let normalisedOutputFile = [];
     let i = 0;
+    let stringbuilder = '';
     outputfile.forEach(item => {
       if (item.match(/R1X/)) {
+        
+        if (stringbuilder.length > 0) {
+          normalisedOutputFile.push(stringbuilder);
+        }
+        
+        stringbuilder += item + ',';
         i = 0;
-        console.log('>>> Counter reset.');
-        normalisedOutputFile.push(item);
+        //stringbuilder = '';
+        console.log('>>> Counter reset ' + item);
       } else {
         if (i === 10) {
-          if (item.match(/^\,\n/g)) {
+          if (item.length === 0) {
             // Ignore it.
             console.log('>>> IGNORED ' + item);
           } else {
-            normalisedOutputFile.push(item);
-            console.log(item);
+            stringbuilder += item + ',';
           }
+        } else {
+          stringbuilder += item + ','; // HERE 
         }
-        normalisedOutputFile.push(item);
       }
       i++;
     });
