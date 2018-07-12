@@ -27,7 +27,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     
     // Create an empty output array for reformatted data.
     let outputfile = [];
-    // Couter.
+    // Couter for identifying the first record in the data.
     let counter = 0;
     // Loop through each item in the rtfline array to create a CSV.
     rtfline.forEach(item => {
@@ -46,43 +46,28 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
         // ...add each subsequent item to the CSV.
         outputfile.push(item);
       }
-      // Increment the counter.
+      // Increment the counter by 1.
       counter++;
     });
     
-    // Equalising record lengths: ensure that each record is 21 fields long.
-    // If field 11 is blank, remove it.
+    // Equalising record lengths: ensure that each record has the same number of fields.
+    // If field 11 is blank, remove it as this is an additional address line where 6 or more
+    // address fields occur.
     let normalisedOutputFile = [];
-    let i = 0; // record position counter.
-    let stringbuilder = '';
+    let i = 0; // Zero based record position counter to identify the 11th record.
     outputfile.forEach(item => {
       if (item.match(/R1X/)) {
-        
-        //if (stringbuilder.length > 0) {
-        //  console.log('>>> Push record: ' + stringbuilder);
-        //  normalisedOutputFile.push(stringbuilder);
-        //  //stringbuilder = '';
-        //}
-        //
-        //stringbuilder += item + ',';
-        //i = 0;
-        //
-        //console.log('>>> Counter reset ' + item);
         normalisedOutputFile.push(item);
-        i = 0;
+        i = 0; // Reset the counter when a new record is identified.
       } else {
         if (i === 10) {
           if (item.length === 0) {
             // Ignore it.
             console.log('>>> IGNORED ' + item);
-            // Splice the record from the array.
-            //outputfile.splice(ii, 1);
           } else {
-            //stringbuilder += item + ',';
             normalisedOutputFile.push(item);
           }
         } else {
-          //stringbuilder += item + ','; // HERE 
           normalisedOutputFile.push(item);
         }
       }
