@@ -71,6 +71,8 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
           if (item === 'amounts') {
             normalisedOutputFile.push('');
             normalisedOutputFile.push(item);
+          } else {
+            normalisedOutputFile.push(item);
           }
         } else {
           normalisedOutputFile.push(item);
