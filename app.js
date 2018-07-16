@@ -67,6 +67,11 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
           } else {
             normalisedOutputFile.push(item);
           }
+        } else if (i === 16) { // Make space for records with a second financial year.
+          if (item === 'amounts') {
+            normalisedOutputFile.push('');
+            normalisedOutputFile.push(item);
+          }
         } else {
           normalisedOutputFile.push(item);
         }
