@@ -1,7 +1,8 @@
 const fs = require('fs');
 const parsertf = require('rtf-parser');
+const Rem1Service = require('./services/Rem1Service.js');
 
-let filename = './Rem1 MattTest.rtf';
+let filename = './Rem2 MattTest.rtf';
 
 // New instance of rtf-parser module.
 parsertf.stream(fs.createReadStream(filename), (err, doc) => {
@@ -56,7 +57,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let normalisedOutputFile = [];
     let i = 0; // Zero based record position counter to identify the 11th record.
     outputfile.forEach(item => {
-      if (item.match(/R1X/)) {
+      if (item.match(/R1X/) || item.match(/REM2/)) {
         normalisedOutputFile.push(item);
         i = 0; // Reset the counter when a new record is identified.
       } else {
