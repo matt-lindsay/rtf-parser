@@ -2,7 +2,7 @@ const fs = require('fs');
 const parsertf = require('rtf-parser');
 const Rem1Service = require('./services/Rem1Service.js');
 
-let filename = './rtf-files/Final June2018.rtf';
+let filename = './rtf-files/Summons May 2018.rtf';
 
 // New instance of rtf-parser module.
 parsertf.stream(fs.createReadStream(filename), (err, doc) => {
@@ -30,12 +30,18 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let outputfile = [];
     // Couter for identifying the first record in the data.
     let counter = 0;
+    // Boolean to test for reminder (true) or summons (false).
+    let reminder = true;
     // Loop through each item in the rtfline array to create a CSV.
     rtfline.forEach(item => {
       // Identify the start of each type of record...
       if (item === 'R1X' || item === 'REM2' || item === 'XXFLAT' || item === 'FINALX') {
         // ...add a newline prior to the start of a new record. The first record will require its
         // preceeding newline character to be removed.
+	// Set reminder boolean value.
+	if (item === 'XXFLAT') {
+	  reminder = false;
+	}
         if (counter === 0 ) {
           // If it is the first record, add to the output array.
           outputfile.push(item);
@@ -57,28 +63,44 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let normalisedOutputFile = [];
     let i = 0; // Zero based record position counter to identify the 11th record.
     outputfile.forEach(item => {
-      if (item.match(/R1X/) || item.match(/REM2/) || item.match(/FINALX/)) {
-        normalisedOutputFile.push(item);
-        i = 0; // Reset the counter when a new record is identified.
-      } else {
-        if (i === 10) {
-          if (item.length === 0) {
-            // Ignore it.
-            console.log('>>> IGNORED ' + item);
-          } else {
-            normalisedOutputFile.push(item);
-          }
-        } else if (i === 16) { // Make space for records with a second financial year.
-          if (item === 'amounts') {
-            normalisedOutputFile.push('');
-            normalisedOutputFile.push(item);
-          } else {
-            normalisedOutputFile.push(item);
-          }
-        } else {
+	// Remove any ',' characters from each item.
+        // Then repeat incase there is more than one ',' per string item.
+	item = item.replace(',', ' ');
+	item = item.replace(',', ' ');
+	// Split summons court cost figures into two fields.
+	item = item.replace('Cost (Authority)', ',Cost (Authority)');
+
+        if (item.match(/R1X/) || item.match(/REM2/) || item.match(/FINALX/) || item.match(/XXFLAT/)) {
           normalisedOutputFile.push(item);
+          i = 0; // Reset the counter when a new record is identified.
+        } else {
+          if (i === 10 && reminder === true) {
+            if (item.length === 0) {
+              // Ignore it.
+              console.log('>>> IGNORED ' + item);
+            } else {
+              normalisedOutputFile.push(item);
+            }
+          } else if (i === 16 && reminder === true) { // Make space for records with a second financial year.
+            if (item === 'amounts') {
+              normalisedOutputFile.push('');
+              normalisedOutputFile.push(item);
+            } else {
+              normalisedOutputFile.push(item);
+            }
+	  } else if (i === 9 && reminder === false) { // Make space for records with an extra address field.
+            if (item.includes('day')) {
+	      normalisedOutputFile.push('');
+              normalisedOutputFile.push(item);
+	    } else {
+	      //normalisedOutputFile.push('');
+              normalisedOutputFile.push(item);
+	    }
+          } else {
+            normalisedOutputFile.push(item);
+          }
         }
-      }
+      //}
       i++;
     });
 
