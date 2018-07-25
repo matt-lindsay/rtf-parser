@@ -6,6 +6,11 @@ The rtf-parser module splits each line item and whitespace item out into what lo
 
 Reminders 1 and 2 are processed the same providing the field layout in the templates is the same.
 
+## Applied to all templates
+
+- Run two comma removal processes.
+- Divide the Summons court costs field in two.
+
 ## Reminder 1
 
 - Remove form feed character at the start of the file.
@@ -23,8 +28,6 @@ Reminders 1 and 2 are processed the same providing the field layout in the templ
 - Remove first two blank lines.
 
 ## Summons
-- 
 
-## Issues
+- Remove header.
 
-- Commas in address lines.
