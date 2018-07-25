@@ -18,5 +18,13 @@ Reminders 1 and 2 are processed the same providing the field layout in the templ
 - Remove first blank line.
 - Remove empty line after 'REM2'. 
 
+## Final Notice
+
+- Remove first two blank lines.
+
 ## Summons
 - 
+
+## Issues
+
+- Commas in address lines.

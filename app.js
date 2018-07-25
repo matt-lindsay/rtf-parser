@@ -2,7 +2,7 @@ const fs = require('fs');
 const parsertf = require('rtf-parser');
 const Rem1Service = require('./services/Rem1Service.js');
 
-let filename = './Rem2 MattTest.rtf';
+let filename = './rtf-files/Final June2018.rtf';
 
 // New instance of rtf-parser module.
 parsertf.stream(fs.createReadStream(filename), (err, doc) => {
@@ -33,7 +33,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     // Loop through each item in the rtfline array to create a CSV.
     rtfline.forEach(item => {
       // Identify the start of each type of record...
-      if (item === 'R1X' || item === 'REM2' || item === 'XXFLAT') {
+      if (item === 'R1X' || item === 'REM2' || item === 'XXFLAT' || item === 'FINALX') {
         // ...add a newline prior to the start of a new record. The first record will require its
         // preceeding newline character to be removed.
         if (counter === 0 ) {
@@ -57,7 +57,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     let normalisedOutputFile = [];
     let i = 0; // Zero based record position counter to identify the 11th record.
     outputfile.forEach(item => {
-      if (item.match(/R1X/) || item.match(/REM2/)) {
+      if (item.match(/R1X/) || item.match(/REM2/) || item.match(/FINALX/)) {
         normalisedOutputFile.push(item);
         i = 0; // Reset the counter when a new record is identified.
       } else {
@@ -83,7 +83,7 @@ parsertf.stream(fs.createReadStream(filename), (err, doc) => {
     });
 
     // Write the compiled CSV data in outputfile to a file.
-    fs.writeFile('./processedRtf.csv', normalisedOutputFile, 'utf8', (err) => {
+    fs.writeFile('./output/processedRtf.csv', normalisedOutputFile, 'utf8', (err) => {
       if (err) {
         throw err;
       } else {
