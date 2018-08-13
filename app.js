@@ -2,18 +2,40 @@
 
 //const fs = require('fs');
 //const parsertf = require('rtf-parser');
+const BidService = require('./src/services/BidService.js');
 const CtxService = require('./src/services/CtxService.js');
 const NdrService = require('./src/services/NdrService.js');
 
-let filename = './resources/rtf-files/ctx/Ctx Summons Aug 2018.rtf';
+let filename = './resources/rtf-files/bid/BIDREM2017 - DEC17.rtf';
 
 // If Ctax file...
 if (filename.includes('Ctx')) {
   let ctax = new CtxService();
-  ctax.processRtf(filename);
+  ctax.processRtf(filename, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
 } else if (filename.includes('NDR')) {
   let ndr = new NdrService();
-  ndr.processRtf(filename);
+  ndr.processRtf(filename, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+} else if (filename.includes('BID')) {
+  let bid = new BidService();
+  bid.processRtf(filename, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
 }
 
 //// New instance of rtf-parser module.

@@ -3,7 +3,7 @@
 const fs = require('fs');
 const parsertf = require('rtf-parser');
 
-var NdrService = function() {
+var BidService = function() {
         let processRtf = function(filename, cb)  {
           parsertf.stream(fs.createReadStream(filename), (err, doc) => {
             if (err) {
@@ -34,7 +34,7 @@ var NdrService = function() {
               // Loop through each item in the rtfline array to create a CSV.
               rtfline.forEach(item => {
                 // Identify the start of each type of record...
-                if (item === 'NNDRREMF' || item === 'NNDR F') {
+                if (item === 'BIDREMF') {
                   // ...add a newline prior to the start of a new record. The first record will require its
                   // preceeding newline character to be removed.
                   // Set reminder boolean value.
@@ -69,7 +69,7 @@ var NdrService = function() {
                 // Split summons court cost figures into two fields.
                 item = item.replace('Cost (Authority)', ',Cost (Authority)');
 
-                if (item.match(/NNDRREMF/) || item.match(/NNDR F/)) {
+                if (item.match(/BIDREMF/)) {
                   normalisedOutputFile.push(item);
                   i = 0; // Reset the counter when a new record is identified.
                 } else {
@@ -122,4 +122,4 @@ var NdrService = function() {
           processRtf: processRtf
         };
       };
-module.exports = NdrService;
+module.exports = BidService;

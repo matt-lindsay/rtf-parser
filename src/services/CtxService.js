@@ -4,11 +4,11 @@ const fs = require('fs');
 const parsertf = require('rtf-parser');
 
 let CtxService = function() {
-        let processRtf = function(filename)  {
+        let processRtf = function(filename, cb)  {
           // New instance of rtf-parser module.
           parsertf.stream(fs.createReadStream(filename), (err, doc) => {
             if (err) {
-              throw err;
+              cb(err, null);
             } else {
               // Array to hold each part of the textual data.
               let rtfline = [];
@@ -103,14 +103,16 @@ let CtxService = function() {
                 //}
                 i++;
               });
-              console.log(__dirname);
+
               // Write the compiled CSV data in outputfile to a file.
-              fs.writeFile(filename + '.csv', normalisedOutputFile, 'utf8',
+              fs.writeFile(filename, normalisedOutputFile, 'utf8',
                 (err) => {
                 if (err) {
-                  throw err;
+                  cb(err, null);
+                  //throw err;
                 } else {
-                  console.log('>>> File written.');  // DEBUG
+                  cb(null, '>>> File written.');
+                  //console.log('>>> File written.');  // DEBUG
                 }
               });
             }
