@@ -8,9 +8,12 @@
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "matt lindsay",
+  "author": "Matt Lindsay",
   "license": "MIT",
   "dependencies": {
     "rtf-parser": "^1.1.0"
+  },
+  "devDependencies": {
+    "jscs": "^3.0.7"
   }
 }

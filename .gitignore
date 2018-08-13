@@ -69,3 +69,5 @@ Summons MattTest.rtf
 *.png
 *~*
 *.swp
+.jshintrc
+.jscsrc
