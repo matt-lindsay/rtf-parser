@@ -6,7 +6,10 @@ const BidService = require('./src/services/BidService.js');
 const CtxService = require('./src/services/CtxService.js');
 const NdrService = require('./src/services/NdrService.js');
 
-let filename = './resources/rtf-files/bid/BIDREM2017 - DEC17.rtf';
+let filename = process.argv[2];
+console.log(filename);
+
+//let filename = './resources/rtf-files/bid/BIDREM2017 - DEC17.rtf';
 
 // If Ctax file...
 if (filename.includes('Ctx')) {
