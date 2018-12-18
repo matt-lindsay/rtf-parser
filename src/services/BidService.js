@@ -34,11 +34,11 @@ var BidService = function() {
               // Loop through each item in the rtfline array to create a CSV.
               rtfline.forEach(item => {
                 // Identify the start of each type of record...
-                if (item === 'BIDREMF') {
+                if (item === 'BIDREMF' || item === 'BIDSUM') {
                   // ...add a newline prior to the start of a new record. The first record will require its
                   // preceeding newline character to be removed.
                   // Set reminder boolean value.
-                  if (item === 'XXFLAT') {
+                  if (item === 'BIDSUM') {
                     reminder = false;
                   }
                   if (counter === 0) {
@@ -69,7 +69,7 @@ var BidService = function() {
                 // Split summons court cost figures into two fields.
                 item = item.replace('Cost (Authority)', ',Cost (Authority)');
 
-                if (item.match(/BIDREMF/)) {
+                if (item.match(/BIDREMF/) || item.match(/BIDSUM/)) {
                   normalisedOutputFile.push(item);
                   i = 0; // Reset the counter when a new record is identified.
                 } else {

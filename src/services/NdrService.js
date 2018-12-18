@@ -13,9 +13,10 @@ var NdrService = function() {
               let rtfline = [];
               // Empty line item to write to prior to writing to the rtfline array.
               let lineitem = '';
-
+              console.log(`>>> ${(doc)}`);
               // Loop through the parsed rtf document...
               doc.content.forEach(item => {
+                console.log(`>>> ${(item)}`);
                 item.content.forEach(record => {
                   lineitem += record.value;
                 });
@@ -34,11 +35,11 @@ var NdrService = function() {
               // Loop through each item in the rtfline array to create a CSV.
               rtfline.forEach(item => {
                 // Identify the start of each type of record...
-                if (item === 'NNDRREMF' || item === 'NNDR F') {
+                if (item === 'NNDRREMF' || item === 'NNDR F' || item === 'NNDRSUM') {
                   // ...add a newline prior to the start of a new record. The first record will require its
                   // preceeding newline character to be removed.
                   // Set reminder boolean value.
-                  if (item === 'XXFLAT') {
+                  if (item === 'NNDRSUM') {
                     reminder = false;
                   }
                   if (counter === 0) {
@@ -69,7 +70,7 @@ var NdrService = function() {
                 // Split summons court cost figures into two fields.
                 item = item.replace('Cost (Authority)', ',Cost (Authority)');
 
-                if (item.match(/NNDRREMF/) || item.match(/NNDR F/)) {
+                if (item.match(/NNDRREMF/) || item.match(/NNDR F/) || item.match(/NNDRSUM/)) {
                   normalisedOutputFile.push(item);
                   i = 0; // Reset the counter when a new record is identified.
                 } else {
